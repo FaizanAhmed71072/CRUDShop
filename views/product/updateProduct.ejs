@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title><%= pageTitle %></title>
+  </head>
+ 
+  <body>
+    <h2>Update Product</h2>
+    <form action="/product/updated" method="POST">
+      <label for="name">Name:</label>
+      <input
+        type="hidden"
+        value="<%= product.dataValues.id %>"
+        name="productID"
+      />
+      <input
+        type="text"
+        name="name"
+        id="name"
+        value="<%= product.dataValues.name %>"
+      />
+      
+      <label for="type">Type:</label>
+      <select name="type_opt" id="type_opt">
+        <option value="" disabled hidden>Choose here</option>
+        <optgroup label="Crockery">
+          <option value="plates" <%= product.dataValues.type === "plates" ? "selected" : "" %> >Plates</option>
+          <option value="spoons" <%= product.dataValues.type === "spoons" ? "selected" : "" %> >Spoon</option>
+        </optgroup>
+
+        <optgroup label="Tech">
+          <option value="headphones" <%= product.dataValues.type === "headphones" ? "selected" : "" %>>Headphones</option>
+          <option value="speakers" <%= product.dataValues.type === "speakers" ? "selected" : "" %>>Speakers</option>
+          <option value="amplifiers" <%= product.dataValues.type === "amplifiers" ? "selected" : "" %>>Amplifiers</option>
+        </optgroup>
+      </select>
+
+      <label for="quantity">Quantity:</label>
+      <input
+        type="text"
+        name="quantity"
+        id="quantity"
+        value="<%= product.dataValues.quantity %>"
+      />
+
+      <button type="submit">Update</button>
+    </form>
+  </body>
+</html>

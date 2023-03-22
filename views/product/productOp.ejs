@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title><%= pageTitle %></title>
+    <style>
+      table {
+        margin: auto;
+        width: 50%;
+      }
+      th,
+      td {
+        background-color: #a187c4;
+        padding: 10px;
+        margin: auto;
+      }
+      input {
+        margin-right: 10px;
+      }
+
+      select {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <% if(products.length >= 1) { %>
+    <h2>Products:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Quantity</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+      <% products.forEach((product) => { %>
+      <tbody>
+        <tr>
+          <td><%= product.dataValues.name %></td>
+          <td><%= product.dataValues.type %></td>
+          <td><%= product.dataValues.quantity %></td>
+          <td style="display: flex; justify-content: space-evenly">
+            <form action="/product/delete" method="POST">
+              <input
+                type="hidden"
+                value="<%= product.dataValues.id %>"
+                name="productID"
+              />
+              <button style="margin-right: 5px">Delete</button>
+            </form>
+
+            <form action="/product/update" method="POST">
+              <input
+                type="hidden"
+                value="<%= product.dataValues.id %>"
+                name="productID"
+              />
+              <button>Update</button>
+            </form>
+          </td>
+        </tr>
+        <% })%> <% } else {%>
+        <h2>NO PRODUCTS!</h2>
+        <% } %>
+      </tbody>
+    </table>
+    <hr />
+    <h2>Create Product</h2>
+    <form action="/product/" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" name="name" id="name" />
+
+      <label for="type">Type:</label>
+      <select name="type_opt" id="type_opt">
+        <option value="" selected disabled hidden>Choose here</option>
+        <optgroup label="Crockery">
+          <option value="plates">Plates</option>
+          <option value="spoons">Spoon</option>
+        </optgroup>
+
+        <optgroup label="Tech">
+          <option value="headphones">Headphones</option>
+          <option value="speakers">Speakers</option>
+          <option value="amplifiers">Amplifiers</option>
+        </optgroup>
+      </select>
+
+      <label for="quantity">Quantity:</label>
+      <input type="text" name="quantity" id="quantity" />
+
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title><%= pageTitle %></title>
+    <style>
+      table{
+        margin: auto;
+        width: 50%;
+      }
+      th,
+      td {
+        background-color: #dbd4d4;
+        padding: 10px;
+        margin: auto;
+      }
+      input {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    
+  <% if(users.length >= 1) { %> 
+    <h2>Users:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+      <% users.forEach((user) => { %>
+      <tbody>
+        <tr>
+          <td><%= user.dataValues.firstName %></td>
+          <td><%= user.dataValues.lastName %></td>
+          <td><%= user.dataValues.email %></td>
+          <td style="display: flex; justify-content: space-evenly;">
+            <form action="/user/delete" method="POST">
+              <input type="hidden" value="<%= user.dataValues.id %>" name="userID">
+              <button style="margin-right: 5px;">Delete</button>
+            </form>
+
+            <form action="/user/update" method="POST">
+              <input type="hidden" value="<%= user.dataValues.id %>" name="userID">
+              <button>Update</button>
+            </form>
+            
+          </td>
+          
+            
+          </td>
+        </tr>
+        <% })%> <% } else {%>
+        <h2>NO USERS!</h2>
+        <% } %>
+      </tbody>
+    </table>
+    <hr>
+    <h2>Create User</h2>
+    <form action="/user/" method="POST">
+      <label for="firstName">First Name:</label>
+      <input type="text" name="firstName" id="firstName" />
+
+      <label for="lastName">Last Name:</label>
+      <input type="text" name="lastName" id="lastName" />
+
+      <label for="email">Email:</label>
+      <input type="text" name="email" id="email" />
+
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
