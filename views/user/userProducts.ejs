@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title><%= pageTitle %></title>
+    <style>
+      table {
+        margin: auto;
+        width: 50%;
+      }
+      th,
+      td {
+        background-color: #a187c4;
+        padding: 10px;
+        margin: auto;
+      }
+      input {
+        margin-right: 10px;
+      }
+
+      select {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <% if(products.length >= 1) { %>
+    <h2>Products:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Quantity</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+      <% products.forEach((product) => { %>
+      <tbody>
+        <tr>
+          <td><%= product.dataValues.name %></td>
+          <td><%= product.dataValues.type %></td>
+          <td><%= product.dataValues.quantity %></td>
+          <td style="display: flex; justify-content: space-evenly">
+            <form action="/cart" method="POST">
+                <label for="type">quantity:</label>
+                <select name="productQty" id="productQty">
+                    <option value="" selected disabled hidden>Choose here</option>
+                    <% for(let i = 0; i<product.dataValues.quantity; i++) { %>
+                        <option value= "<%= i+1 %>" ><%= i+1 %></option>
+                    <% } %>
+                </select>
+                <input
+                    type="hidden"
+                    value="<%= product.dataValues.id %>"
+                    name="productID"
+                />
+                <button style="margin-right: 5px">Add To Cart</button>
+            </form>
+          </td>
+        </tr>
+        <% })%> <% } else {%>
+        <h2>NO PRODUCTS!</h2>
+        <% } %>
+      </tbody>
+    </table>
+
+  </body>
+</html>

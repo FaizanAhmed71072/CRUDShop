@@ -13,4 +13,10 @@ router.post("/update", userController.getUpdateUser);
 
 router.post("/updated", userController.postUpdateUser);
 
+router.get("/products", userController.getUserProducts);
+
+// router.post("/cart", userController.postUserCart);
+
+router.get("/cart", userController.getUserCart);
+
 module.exports = router;

@@ -21,8 +21,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
 
-db.User.belongsToMany(db.Product);
-db.Product.belongsTo(db.User);
+// db.User.belongsToMany(db.Product);
+// db.Product.belongsTo(db.User);
+
+db.Cart.belongsTo(db.User);
+db.User.hasOne(db.Cart);
+
+db.Cart.belongsToMany(db.Product, { through: db.CartItem });
+db.Product.belongsToMany(db.Cart, { through: db.CartItem });
 
 db.sequelize
   // .sync({ force: true })

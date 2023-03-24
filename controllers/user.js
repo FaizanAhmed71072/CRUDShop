@@ -1,9 +1,11 @@
 const db = require("../models");
+const url = require("url");
+const querystring = require("querystring");
 
 exports.postCreateUser = async (req, res, next) => {
   console.log("!");
 
-  let user = await db.User.create({
+  await db.User.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
@@ -78,3 +80,86 @@ exports.postUpdateUser = async (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+exports.getUserProducts = async (req, res, next) => {
+  await db.Product.findAll()
+    .then((products) => {
+      res.render("user/userProducts", {
+        pageTitle: "User Products",
+        products: products,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.getUserCart = async (req, res, next) => {
+  const query = url.parse(req.url).query;
+  const queryParams = querystring.parse(query);
+  const userID = queryParams.userID;
+
+  // const userID = req.body;
+  console.log(userID);
+  // const products = [];
+
+  // await db.Cart.findOne({ where: { UserId: userID } })
+  //   .then(async (cart) => {
+  //     if (!cart) {
+  //       await db.Cart.create({
+  //         UserId: userID,
+  //       });
+  //       res.redirect("/user/cart");
+  //     } else {
+  //       res.render("user/userCart", {
+  //         pageTitle: "User Cart",
+  //         cart: cart,
+  //       });
+  //     }
+  //   })
+  //   .catch((err) => console.log(err));
+
+  // await db.Cart.findOne({ where: { UserId: userID } })
+  //   .then((cart) => {
+  //     console.log(cart);
+  //   })
+  //   .catch((err) => console.log(err));
+};
+
+exports.postUserCart = async (req, res, next) => {
+  const productID = req.body.productID;
+  const productQty = req.body.productQty;
+
+  console.log(productID, productQty);
+  // await db.Product.findAll()
+  //   .then((products) => {
+  //     res.render("user/userProducts", {
+  //       pageTitle: "User Products",
+  //       products: products,
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+};
+
+//   await db.CartItem.findAll({
+//     where: { CartId: db.Cart.findOne({ where: { id: userID } }) },
+//   })
+//     .then(async (cart_items) => {
+//       console.log(cart_items);
+//       // res.render("user/userCart", {
+//       //   pageTitle: "User Products",
+//       //   cart_items: cart_items,
+//       // });
+//     })
+//     .catch((err) => console.log(err));
+// };
+
+// exports.getCartUser = async (req, res, next) => {
+//   await db.User.findAll()
+//     .then((users) => {
+//       // console.log(users);
+//       res.render("user/userOp", {
+//         pageTitle: "User",
+//         users: users,
+//       });
+//     })
+//     .catch((err) => console.log(err));
+// };

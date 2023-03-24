@@ -52,6 +52,16 @@
               <input type="hidden" value="<%= user.dataValues.id %>" name="userID">
               <button>Update</button>
             </form>
+
+            <form action="/user/products" method="GET">
+              <input type="hidden" value="<%= user.dataValues.id %>" name="userID">
+              <button>Show Products</button>
+            </form>
+
+            <form action="/user/cart" method="GET">
+              <input type="hidden" value="<%= user.dataValues.id %>" name="userID">
+              <button>Cart</button>
+            </form>
             
           </td>
           
