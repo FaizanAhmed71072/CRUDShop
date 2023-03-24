@@ -97,9 +97,25 @@ exports.getUserCart = async (req, res, next) => {
   const queryParams = querystring.parse(query);
   const userID = queryParams.userID;
 
-  // const userID = req.body;
   console.log(userID);
-  // const products = [];
+  // , include: [{ model: db.Product }]
+  await db.Cart.findAll({
+    include: [{ model: db.Product }],
+    where: {
+      UserID: userID,
+    },
+  })
+    .then(async (cart) => {
+      if (cart.length === 0) {
+        console.log("NOT CART");
+        await db.Cart.create({
+          UserId: userID,
+        }).then(res.send("User Cart Created!"));
+      } else {
+        console.log(cart[0].dataValues.Products);
+      }
+    })
+    .catch((err) => console.log(err));
 
   // await db.Cart.findOne({ where: { UserId: userID } })
   //   .then(async (cart) => {
@@ -129,6 +145,7 @@ exports.postUserCart = async (req, res, next) => {
   const productQty = req.body.productQty;
 
   console.log(productID, productQty);
+  res.redirect("/user/cart");
   // await db.Product.findAll()
   //   .then((products) => {
   //     res.render("user/userProducts", {

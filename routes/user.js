@@ -15,7 +15,7 @@ router.post("/updated", userController.postUpdateUser);
 
 router.get("/products", userController.getUserProducts);
 
-// router.post("/cart", userController.postUserCart);
+router.post("/products", userController.postUserCart);
 
 router.get("/cart", userController.getUserCart);
 
