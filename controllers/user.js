@@ -112,6 +112,9 @@ exports.getUserProducts = async (req, res, next) => {
     if (!products) {
       throw new Error("Unable to find products");
     }
+
+    // res.json({ userID: userID, products: products });
+
     res.render("user/userProducts", {
       pageTitle: "User Products",
       products: products,
@@ -144,7 +147,7 @@ exports.getUserCartProducts = async (req, res, next) => {
         {
           model: db.Product,
           through: {
-            attributes: ["ProductId", "quantity"],
+            attributes: ["ProductId", "quantity", "CartId"],
           },
         },
       ],
@@ -156,11 +159,42 @@ exports.getUserCartProducts = async (req, res, next) => {
       throw new Error("Unable to fetch cart products");
     }
 
+    // res.json(cartProducts[0].Products);
     res.render("user/userCart", {
       pageTitle: "User Cart",
       cart: cartProducts[0].Products,
+      userID: userID,
     });
     // res.json(cartProducts[0].Products);
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+exports.postCartProductRemove = async (req, res, next) => {
+  try {
+    const productID = req.body.productID;
+    const cartID = req.body.cartID;
+    const userID = req.body.userID;
+
+    const cartProduct = await db.CartItem.findOne({
+      where: { ProductId: productID, CartId: cartID },
+    });
+
+    if (!cartProduct) {
+      throw new Error("User Not Found!");
+    }
+
+    await cartProduct.destroy();
+    console.log("Product Removed from Cart");
+    res.redirect(
+      url.format({
+        pathname: "/user/cart",
+        query: {
+          userID: userID,
+        },
+      })
+    );
   } catch (error) {
     res.json(error.message);
   }
