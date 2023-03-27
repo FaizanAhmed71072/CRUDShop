@@ -45,6 +45,7 @@
           <td style="display: flex; justify-content: space-evenly;">
             <form action="/user/delete" method="POST">
               <input type="hidden" value="<%= user.dataValues.id %>" name="userID">
+              <input type="hidden" value="DELETE" name="_method">
               <button style="margin-right: 5px;">Delete</button>
             </form>
 

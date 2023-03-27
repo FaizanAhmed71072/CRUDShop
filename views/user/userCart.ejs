@@ -34,39 +34,21 @@
         <tr>
           <th>Name</th>
           <th>Type</th>
-          <th>Quantity</th>
+          <th>Ordered Quantity</th>
           <th>Options</th>
         </tr>
       </thead>
       <% cart.forEach((item) => { %>
       <tbody>
         <tr>
-          <td><%= item.dataValues.name %></td>
-          <td><%= item.dataValues.type %></td>
-          <td><%= item.dataValues.quantity %></td>
-          <td style="display: flex; justify-content: space-evenly">
-            <label for="type">quantity:</label>
-            <select name="qty_opt" id="qty_opt">
-                <option value="" selected disabled hidden>Choose here</option>
-                <% for(let i = 0; i<product.dataValues.quantity; i++) { %>
-                    <option value= "<%= i+1 %>" ><%= i+1 %></option>
-                <% } %>
-            </select>
-            <form action="/product/cart" method="POST">
-              <input
-                type="hidden"
-                value="<%= product.dataValues.id %>"
-                name="productID"
-              />
-              <button style="margin-right: 5px">Add To Cart</button>
-            </form>
-          </td>
+          <td><%= item.name %></td>
+          <td><%= item.type %></td>
+          <td><%= item.CartItem.quantity %></td>
         </tr>
         <% })%> <% } else {%>
         <h2>NO PRODUCTS!</h2>
         <% } %>
       </tbody>
     </table>
-
   </body>
 </html>

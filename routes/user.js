@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user");
 
-router.get("/", userController.getCreateUser);
+router.get("/", userController.getUsers);
 
 router.post("/", userController.postCreateUser);
 
@@ -17,6 +17,6 @@ router.get("/products", userController.getUserProducts);
 
 router.post("/products", userController.postUserCart);
 
-router.get("/cart", userController.getUserCart);
+router.get("/cart", userController.getUserCartProducts);
 
 module.exports = router;

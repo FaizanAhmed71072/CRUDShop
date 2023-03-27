@@ -25,7 +25,7 @@ app.use("/product", productRoutes);
 // db.Product.belongsTo(db.User);
 
 db.Cart.belongsTo(db.User);
-db.User.hasOne(db.Cart);
+db.User.hasOne(db.Cart, { onDelete: "CASCADE" });
 
 db.Cart.belongsToMany(db.Product, { through: db.CartItem });
 db.Product.belongsToMany(db.Cart, { through: db.CartItem });
