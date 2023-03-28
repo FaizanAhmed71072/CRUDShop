@@ -267,7 +267,8 @@ exports.postCartProductQtySub = async (req, res, next) => {
       throw new Error("Product not found");
     }
 
-    if (cartProduct.quantity > 0) {
+    console.log(cartProduct.quantity);
+    if (cartProduct.quantity > 1) {
       const newQty = await db.CartItem.update(
         {
           quantity: cartProduct.quantity - 1,
@@ -279,7 +280,13 @@ exports.postCartProductQtySub = async (req, res, next) => {
         throw new Error("Unable to subtract quantity");
       }
     } else {
-      throw new Error("Cart product quantity equals 0");
+      const productDel = await db.CartItem.findOne({
+        where: { ProductId: productID, CartId: cartID },
+      });
+
+      await productDel.destroy();
+      console.log("Product removed from cart: Quantity => 0");
+      // throw new Error("Cart product quantity equals 0");
     }
 
     console.log("Product Quantity Subtracted");
