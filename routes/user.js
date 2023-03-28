@@ -21,6 +21,10 @@ router.get("/cart", userController.getUserCartProducts);
 
 router.post("/cart/remove", userController.postCartProductRemove);
 
+router.post("/cart/addQty", userController.postCartProductQtyAdd);
+
+router.post("/cart/subQty", userController.postCartProductQtySub);
+
 // router.get("/cart/update", userController.);
 
 module.exports = router;

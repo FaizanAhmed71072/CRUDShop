@@ -44,7 +44,7 @@
           <td><%= item.name %></td>
           <td><%= item.type %></td>
           <td><%= item.CartItem.quantity %></td>
-          <td style="display: flex; justify-content: space-evenly">
+          <td style="display: flex; justify-content: space-between">
             <form action="/user/cart/remove" method="POST">
               <input type="hidden" value="<%= item.id %>" name="productID" />
               <input
@@ -55,6 +55,29 @@
               <input type="hidden" value="<%= userID %>" name="userID" />
               <input type="hidden" value="DELETE" name="_method" />
               <button style="margin-right: 5px">Remove</button>
+            </form>
+            <label for="orderedQuantity">quantity:</label>
+
+            <form action="/user/cart/subQty" method="POST">
+              <input type="hidden" value="<%= item.id %>" name="productID" />
+              <input type="hidden" value="<%= userID %>" name="userID" />
+              <input
+                type="hidden"
+                value="<%= item.CartItem.CartId %>"
+                name="cartID"
+              />
+              <button style="margin-left: -20px">-</button>
+            </form>
+
+            <form action="/user/cart/addQty" method="POST">
+              <input type="hidden" value="<%= item.id %>" name="productID" />
+              <input type="hidden" value="<%= userID %>" name="userID" />
+              <input
+                type="hidden"
+                value="<%= item.CartItem.CartId %>"
+                name="cartID"
+              />
+              <button style="margin-left: -20px">+</button>
             </form>
           </td>
         </tr>

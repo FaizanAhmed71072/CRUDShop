@@ -200,53 +200,211 @@ exports.postCartProductRemove = async (req, res, next) => {
   }
 };
 
-exports.postUserCart = async (req, res, next) => {
-  const productID = req.body.productID;
-  const productQty = req.body.productQty;
-  const userID = req.body.userID;
+exports.postCartProductQtyAdd = async (req, res, next) => {
   try {
-    const userCart = await db.Cart.findOne({
-      where: {
-        UserId: userID,
-      },
+    const productID = req.body.productID;
+    const cartID = req.body.cartID;
+    const userID = req.body.userID;
+
+    const cartProduct = await db.CartItem.findOne({
+      where: { ProductId: productID, CartId: cartID },
     });
 
-    if (!userCart) {
-      throw new Error("User cart does not exist");
+    if (!cartProduct) {
+      throw new Error("User Not Found!");
     }
     const prodInfo = await db.Product.findById(productID);
 
     if (!prodInfo) {
       throw new Error("Product not found");
     }
-    if (productQty <= prodInfo.quantity) {
-      const productAdded = await db.CartItem.create({
-        ProductId: productID,
-        quantity: productQty,
-        CartId: userCart.id,
-      });
 
-      if (productAdded) {
-        res.redirect(
-          url.format({
-            pathname: "/user/cart",
-            query: {
-              userID: userID,
-            },
-          })
-        );
-        // json({
-        //   sucess: true,
-        //   message: "product added successfully",
-        // });
+    if (cartProduct.quantity + 1 <= prodInfo.quantity) {
+      const newQty = await db.CartItem.update(
+        {
+          quantity: cartProduct.quantity + 1,
+        },
+        { where: { ProductId: productID, CartId: cartID } }
+      );
+
+      if (!newQty) {
+        throw new Error("Unable to add quantity");
       }
     } else {
       throw new Error("Cart product quantity exceeds product quantity");
     }
+
+    console.log("Product Quantity Added");
+    res.redirect(
+      url.format({
+        pathname: "/user/cart",
+        query: {
+          userID: userID,
+        },
+      })
+    );
   } catch (error) {
-    res.json({ error: error.message });
+    res.json(error.message);
   }
 };
+
+exports.postCartProductQtySub = async (req, res, next) => {
+  try {
+    const productID = req.body.productID;
+    const cartID = req.body.cartID;
+    const userID = req.body.userID;
+
+    const cartProduct = await db.CartItem.findOne({
+      where: { ProductId: productID, CartId: cartID },
+    });
+
+    if (!cartProduct) {
+      throw new Error("User Not Found!");
+    }
+    const prodInfo = await db.Product.findById(productID);
+
+    if (!prodInfo) {
+      throw new Error("Product not found");
+    }
+
+    if (cartProduct.quantity > 0) {
+      const newQty = await db.CartItem.update(
+        {
+          quantity: cartProduct.quantity - 1,
+        },
+        { where: { ProductId: productID, CartId: cartID } }
+      );
+
+      if (!newQty) {
+        throw new Error("Unable to subtract quantity");
+      }
+    } else {
+      throw new Error("Cart product quantity equals 0");
+    }
+
+    console.log("Product Quantity Subtracted");
+    res.redirect(
+      url.format({
+        pathname: "/user/cart",
+        query: {
+          userID: userID,
+        },
+      })
+    );
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+exports.postUserCart = async (req, res, next) => {
+  const productID = req.body.productID;
+  const productQty = req.body.productQty;
+  const userID = req.body.userID;
+
+  try {
+    const cartProducts = await db.Cart.findAll({
+      subQuery: false,
+      include: [
+        {
+          model: db.Product,
+          through: {
+            attributes: ["quantity", "CartId"],
+          },
+        },
+      ],
+      where: {
+        UserId: userID,
+      },
+    });
+    let wantedProduct = cartProducts[0].Products.find((product) => {
+      return product.id == productID;
+    });
+    // console.log(wantedProduct);
+
+    if (!wantedProduct) {
+      console.log("IF STATEMENT------------------------------------");
+      const userCart = await db.Cart.findOne({
+        where: {
+          UserId: userID,
+        },
+      });
+
+      if (!userCart) {
+        throw new Error("User cart does not exist");
+      }
+      const prodInfo = await db.Product.findById(productID);
+
+      if (!prodInfo) {
+        throw new Error("Product not found");
+      }
+      if (productQty <= prodInfo.quantity) {
+        const productAdded = await db.CartItem.create({
+          ProductId: productID,
+          quantity: productQty,
+          CartId: userCart.id,
+        });
+
+        if (productAdded) {
+          res.redirect(
+            url.format({
+              pathname: "/user/cart",
+              query: {
+                userID: userID,
+              },
+            })
+          );
+        } else {
+          throw new Error("Cart product quantity exceeds product quantity");
+        }
+      }
+    } else {
+      console.log("ELSE STATEMENT--------------------------------------------");
+      console.log(
+        Number(productQty),
+        wantedProduct.CartItem.quantity,
+        wantedProduct.quantity
+      );
+      if (
+        Number(productQty) + wantedProduct.CartItem.quantity <=
+        wantedProduct.quantity
+      ) {
+        const newQty = await db.CartItem.update(
+          {
+            quantity: wantedProduct.CartItem.quantity + Number(productQty),
+          },
+          {
+            where: {
+              ProductId: productID,
+              CartId: wantedProduct.CartItem.CartId,
+            },
+          }
+        );
+        if (!newQty) {
+          throw new Error("Unable to update quantity");
+        }
+      } else {
+        throw new Error("Cart product quantity exceeds product quantity");
+      }
+    }
+
+    res.redirect(
+      url.format({
+        pathname: "/user/cart",
+        query: {
+          userID: userID,
+        },
+      })
+    );
+  } catch (error) {
+    // res.json(wantedProduct);
+    res.json(error.message);
+  }
+};
+
+//cartProducts[0].Products[n].id ====> ProductID
+// console.log(productID);
+
+// if(productID === cartProducts.CartItem.ProductId)
 
 // .then(async (cart) => {
 //   // console.log(cart);
